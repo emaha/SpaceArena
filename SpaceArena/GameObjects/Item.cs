@@ -1,10 +1,6 @@
-﻿using System;
-
-namespace SpaceOnLine
+﻿namespace SpaceArena.GameObjects
 {
-	public abstract class Item
-	{
-		
-	}
-	
+    public abstract class Item
+    {
+    }
 }

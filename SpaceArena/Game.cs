@@ -2,75 +2,82 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using SpaceArena.Managers;
+using SpaceArena.UI;
 
 namespace SpaceOnLine
 {
     public class Game
     {
-        const int APP_WIDTH = 1600;
-        const int APP_HEIGHT = 900;
+        private const int AppWidth = 1600;
+        private const int AppHeight = 900;
 
-        Random random = new Random();
-        Vector2f centerScreen = new Vector2f(APP_WIDTH / 2.0f, APP_HEIGHT / 2.0f);
+        private Random _random = new Random();
+        private readonly Vector2f _screenCenter = new Vector2f(AppWidth / 2.0f, AppHeight / 2.0f);
 
-        Clock clock = new Clock();
-        Time UPS = Time.FromSeconds(1/60.0f);
-        Time accum = Time.Zero;
+        private readonly Clock _clock = new Clock();
+        private readonly Time _ups = Time.FromSeconds(1 / 60.0f);
+        private Time _accum = Time.Zero;
 
-        float fps;
+        private float _fps;
 
-        RenderWindow wnd;
+        private RenderWindow _wnd;
         public static Vector2f offset;
 
-        Text fpsText, thrustText, posText;
+        private Text _fpsText, _thrustText, _posText;
 
         public Game()
         {
             LoadResources();
         }
 
-        public void LoadResources() {
+        public void LoadResources()
+        {
             AssetManager.LoadTextures();
             AssetManager.LoadFonts();
 
-            try {
-                #if DEBUG
-                wnd = new RenderWindow(new VideoMode(APP_WIDTH, APP_HEIGHT), "Title!");
-                #else
+            try
+            {
+#if DEBUG
+                _wnd = new RenderWindow(new VideoMode(AppWidth, AppHeight), "Title!");
+#else
                 wnd = new RenderWindow(new VideoMode(), "Title!", Styles.Fullscreen);
-                #endif
+#endif
 
                 //wnd.SetFramerateLimit(100);
-                wnd.SetVerticalSyncEnabled(true);
-                wnd.Closed += OnClose;
-                wnd.SetActive();
+                _wnd.SetVerticalSyncEnabled(true);
+                _wnd.Closed += OnClose;
+                _wnd.SetActive();
 
-                fpsText = new Text {
+                _fpsText = new Text
+                {
                     FillColor = Color.Green,
                     Font = AssetManager.GetFont("Terminus"),
                     CharacterSize = 14,
                     Position = new Vector2f(20, 20)
                 };
 
-                thrustText = new Text {
+                _thrustText = new Text
+                {
                     FillColor = Color.Green,
                     Font = AssetManager.GetFont("Terminus"),
                     CharacterSize = 14,
                     Position = new Vector2f(20, 40)
                 };
 
-                posText = new Text {
+                _posText = new Text
+                {
                     FillColor = Color.Green,
                     Font = AssetManager.GetFont("Terminus"),
                     CharacterSize = 14,
                     Position = new Vector2f(20, 50)
                 };
 
-
                 Player.ship.Position = new Vector2f(600, 450);
                 Player.ship.Size = new Vector2f(30, 30);
-
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
             }
         }
@@ -82,48 +89,55 @@ namespace SpaceOnLine
 
             Color windowColor = new Color(28, 28, 28);
 
-            while (wnd.IsOpen && !isExit) {
-                wnd.DispatchEvents();
-                wnd.Clear(windowColor);
+            while (_wnd.IsOpen && !isExit)
+            {
+                _wnd.DispatchEvents();
+                _wnd.Clear(windowColor);
 
-                while (accum >= UPS) {
-                    accum -= UPS;
+                while (_accum >= _ups)
+                {
+                    _accum -= _ups;
                     Update();
                 }
 
                 Draw();
 
-                fps = 1.0f / (clock.ElapsedTime.AsSeconds());
-                accum += clock.Restart();
+                _fps = 1.0f / (_clock.ElapsedTime.AsSeconds());
+                _accum += _clock.Restart();
 
                 isExit = Keyboard.IsKeyPressed(Keyboard.Key.Escape);
             }
-            wnd.Close();
+            _wnd.Close();
         }
 
-        public void Update() {
+        public void Update()
+        {
             HandleKeyboard();
-            offset = Lerp(offset, Player.ship.Position - centerScreen, 0.05f);
-            
+            offset = Lerp(offset, Player.ship.Position - _screenCenter, 0.05f);
+
             LevelManager.Update();
             Player.Update();
+            UiManager.Update(_wnd);
         }
 
-        public void Draw() {
-            thrustText.DisplayedString = "Thrust: " + Player.ship.Thrust;
-            posText.DisplayedString = "POS: " + (int)Player.ship.Position.X + "," + (int)Player.ship.Position.Y;
-            fpsText.DisplayedString = "FPS: " + (int) fps;
-            
-            LevelManager.Draw(wnd);
-            wnd.Draw(fpsText);
-            wnd.Draw(thrustText);
-            wnd.Draw(posText);
-            Player.Draw(wnd);
+        public void Draw()
+        {
+            _thrustText.DisplayedString = "Thrust: " + Player.ship.Thrust;
+            _posText.DisplayedString = "POS: " + (int)Player.ship.Position.X + "," + (int)Player.ship.Position.Y;
+            _fpsText.DisplayedString = "FPS: " + (int)_fps;
 
-            wnd.Display();
+            LevelManager.Draw(_wnd);
+            _wnd.Draw(_fpsText);
+            _wnd.Draw(_thrustText);
+            _wnd.Draw(_posText);
+            //Player.Draw(wnd);
+
+            UiManager.Draw(_wnd);
+
+            _wnd.Display();
         }
 
-        void HandleKeyboard()
+        private void HandleKeyboard()
         {
             Player.ship.Thrust = 0.0f;
             if (Keyboard.IsKeyPressed(Keyboard.Key.Num1))
@@ -134,7 +148,8 @@ namespace SpaceOnLine
             {
                 Player.ship.Weight = 10f;
             }
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A)) {
+            if (Keyboard.IsKeyPressed(Keyboard.Key.A))
+            {
                 Player.ship.Rotation -= 0.1f;
             }
             if (Keyboard.IsKeyPressed(Keyboard.Key.D))
@@ -147,7 +162,7 @@ namespace SpaceOnLine
             }
             if (Keyboard.IsKeyPressed(Keyboard.Key.S))
             {
-                Player.ship.Thrust = -5f; 
+                Player.ship.Thrust = -5f;
             }
             if (Keyboard.IsKeyPressed(Keyboard.Key.X))
             {
@@ -163,49 +178,51 @@ namespace SpaceOnLine
             }
         }
 
-        Vector2f Lerp(Vector2f v0, Vector2f v1, float t)
+        private Vector2f Lerp(Vector2f v0, Vector2f v1, float t)
         {
             return (1 - t) * v0 + t * v1;
         }
 
-        void InitLevel()
+        private void InitLevel()
         {
-            //Ships
-            for (int i = 0; i < 500; i++)
-            {
-                Ship s = new Ship {
-                    Position = new Vector2f(random.Next(10000) - 5000, random.Next(10000) - 5000),
-                    Velocity = new Vector2f((float) random.NextDouble() - 0.5f, (float) random.NextDouble() - 0.5f),
-                    Size = new Vector2f(20, 20)
-                };
+            var window = new GmWindow(new Vector2f(100, 100), new Vector2f(300, 200));
+            var button1 = new Button(new Vector2f(50, 50), new Vector2f(60, 40));
+            window.Add(button1);
+            UiManager.Add(window);
 
-                LevelManager.AddObject(s);
-            }
+            ////Ships
+            //for (int i = 0; i < 500; i++)
+            //{
+            //    Ship s = new Ship {
+            //        Position = new Vector2f(random.Next(10000) - 5000, random.Next(10000) - 5000),
+            //        Velocity = new Vector2f((float) random.NextDouble() - 0.5f, (float) random.NextDouble() - 0.5f),
+            //        Size = new Vector2f(20, 20)
+            //    };
 
+            //    LevelManager.AddObject(s);
+            //}
 
-            //Stations
-            for (int i = 0; i < 10; i++)
-            {
-                SpaceObject station = new Station();
-                station.Position = new Vector2f(random.Next(10000)-5000, random.Next(10000) - 5000);
-                station.Size = new Vector2f(random.Next(200) + 10, random.Next(200) + 10);
+            ////Stations
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    SpaceObject station = new Station();
+            //    station.Position = new Vector2f(random.Next(10000)-5000, random.Next(10000) - 5000);
+            //    station.Size = new Vector2f(random.Next(200) + 10, random.Next(200) + 10);
 
-                LevelManager.AddObject(station);
-            }
+            //    LevelManager.AddObject(station);
+            //}
 
-            //Stations
-            for (int i = 0; i < 1000; i++) {
-                SpaceObject asteroid = new Asteroid();
-                asteroid.Position = new Vector2f(random.Next(10000) - 5000, random.Next(10000) - 5000);
-                asteroid.Size = new Vector2f(random.Next(200) + 10, random.Next(200) + 10);
-                asteroid.Rotation = (float)random.NextDouble()*360f;
-                LevelManager.AddObject(asteroid);
-            }
-
-
+            ////Asteroids
+            //for (int i = 0; i < 1000; i++) {
+            //    SpaceObject asteroid = new Asteroid();
+            //    asteroid.Position = new Vector2f(random.Next(10000) - 5000, random.Next(10000) - 5000);
+            //    asteroid.Size = new Vector2f(random.Next(200) + 10, random.Next(200) + 10);
+            //    asteroid.Rotation = (float)random.NextDouble()*360f;
+            //    LevelManager.AddObject(asteroid);
+            //}
         }
 
-        void DrawLine(RenderTarget target)
+        private void DrawLine(RenderTarget target)
         {
             Vertex[] line = new Vertex[2];
             line[0].Position = new Vector2f(20, 20);
@@ -215,15 +232,16 @@ namespace SpaceOnLine
 
             target.Draw(line, PrimitiveType.Lines);
         }
-        void DrawShape(RenderTarget target)
+
+        private void DrawShape(RenderTarget target)
         {
             Shape sh = new RectangleShape(new Vector2f(10, 10));
             sh.Position = new Vector2f(10, 10);
             sh.FillColor = Color.Blue;
-            //sh.
             target.Draw(sh);
         }
-        void DrawTriangle(RenderTarget target)
+
+        private void DrawTriangle(RenderTarget target)
         {
             VertexArray triangle = new VertexArray(PrimitiveType.Triangles, 3);
 
@@ -240,8 +258,4 @@ namespace SpaceOnLine
             window.Close();
         }
     }
-
-
-
 }
-

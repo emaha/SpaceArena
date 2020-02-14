@@ -1,14 +1,15 @@
-﻿using SFML.Graphics;
+﻿using System;
+using SFML.Graphics;
 using SFML.System;
-using System;
+using SpaceOnLine;
 
-namespace SpaceOnLine
+namespace SpaceArena.GameObjects
 {
-    class Projectile : SpaceObject
+    internal class Projectile : SpaceObject
     {
-        int liveTime = 120;
-        
-        //TODO: 
+        private int liveTime = 120;
+
+        //TODO:
 
         public Projectile(Vector2f pos, float rot)
         {
@@ -16,7 +17,7 @@ namespace SpaceOnLine
 
             Position = pos;
             Rotation = rot;
-            Velocity = new Vector2f((float)Math.Cos(Rotation)*10.0f, (float)Math.Sin(Rotation) * 10.0f);
+            Velocity = new Vector2f((float)Math.Cos(Rotation) * 10.0f, (float)Math.Sin(Rotation) * 10.0f);
             Size = new Vector2f(3, 3);
         }
 
@@ -26,7 +27,8 @@ namespace SpaceOnLine
             isAlive = liveTime-- > 0;
         }
 
-        public override void Draw(RenderTarget target) {
+        public override void Draw(RenderTarget target)
+        {
             target.Draw(sprite);
         }
     }

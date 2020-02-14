@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SFML.Graphics;
-using SFML.System;
+﻿using SFML.Graphics;
+using SpaceOnLine;
 
-namespace SpaceOnLine
+namespace SpaceArena.GameObjects
 {
-    class Asteroid : SpaceObject
+    internal class Asteroid : SpaceObject
     {
         public Asteroid()
         {
@@ -20,11 +15,9 @@ namespace SpaceOnLine
             base.Update();
         }
 
-
         public override void Draw(RenderTarget target)
         {
             target.Draw(sprite);
         }
-
     }
 }

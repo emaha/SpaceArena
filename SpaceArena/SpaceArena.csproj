@@ -64,6 +64,7 @@
     <Compile Include="AI\AI.cs" />
     <Compile Include="GameObjects\Asteroid.cs" />
     <Compile Include="Managers\AssetManager.cs" />
+    <Compile Include="Managers\UIManager.cs" />
     <Compile Include="Network\AsyncClient.cs" />
     <Compile Include="Managers\ConstantsManager.cs" />
     <Compile Include="Game.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="GameObjects\SpaceObject.cs" />
     <Compile Include="GameObjects\Station.cs" />
     <Compile Include="UI\UIControl.cs" />
+    <Compile Include="UI\GmWindow.cs" />
     <Compile Include="WindowMain.cs" />
   </ItemGroup>
   <ItemGroup>

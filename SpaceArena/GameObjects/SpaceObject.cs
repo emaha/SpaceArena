@@ -1,8 +1,9 @@
 ﻿using System;
-using SFML.System;
 using SFML.Graphics;
+using SFML.System;
+using SpaceOnLine;
 
-namespace SpaceOnLine
+namespace SpaceArena.GameObjects
 {
     public abstract class SpaceObject
     {
@@ -15,10 +16,10 @@ namespace SpaceOnLine
 
         protected Sprite sprite;
 
-
         public virtual void Draw(RenderTarget target)
         {
         }
+
         public virtual void Update()
         {
             Position += Velocity;

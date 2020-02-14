@@ -1,11 +1,12 @@
 ﻿using SFML.Graphics;
 using System;
 using SFML.System;
+using SpaceArena.GameObjects;
 
 namespace SpaceOnLine
 {
-	public static class Player
-	{
+    public static class Player
+    {
         public static Ship ship;
 
         static Player()
@@ -13,7 +14,7 @@ namespace SpaceOnLine
             ship = new Ship();
         }
 
-		public static void Update()
+        public static void Update()
         {
             ship.Update();
         }
@@ -22,6 +23,5 @@ namespace SpaceOnLine
         {
             ship.Draw(target);
         }
-		
-	}
+    }
 }

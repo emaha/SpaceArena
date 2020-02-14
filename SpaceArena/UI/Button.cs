@@ -3,51 +3,56 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace SpaceOnLine
+namespace SpaceArena.UI
 {
-	public class myArgs : EventArgs
-	{
-		public string msg;
-		public myArgs(string m)
-		{
-			msg = m;
-		}
-	}
-	
-	
-	public class Button : UIControl
-	{
-		public string text;
-		
-		RectangleShape sh = new RectangleShape();
-		
-		
-		public Button(Vector2f pos, Vector2f size)
-		{
-			this.pos = sh.Position = pos;
-			this.size = sh.Size = size;
-			sh.FillColor = Color.Blue;
-		}
-		
-		public void Update(RenderWindow wnd)
-		{
-			if(Mouse.IsButtonPressed(Mouse.Button.Left))
-			{
-				Vector2i mousePos = Mouse.GetPosition(wnd);
-				Console.WriteLine(mousePos.X + " " + mousePos.Y);
-				IntRect rect = new IntRect((Vector2i)pos,(Vector2i)size);
-				
-				if(rect.Contains(mousePos.X, mousePos.Y))
-				{
-					OnClick(this, new EventArgs());
-				}
-			}
-			
-		}
-		
-		public void Draw(RenderTarget target)
-		{
-			target.Draw(sh);
-		}
-	}
+    public class MyArgs : EventArgs
+    {
+        public string msg;
+
+        public MyArgs(string m)
+        {
+            msg = m;
+        }
+    }
+
+    public class Button : UIControl
+    {
+        public string text;
+
+        private readonly RectangleShape _shape = new RectangleShape();
+
+        public Button(Vector2f position, Vector2f size)
+        {
+            this.position = position;
+            this.size = size;
+
+            _shape.Size = size;
+            _shape.FillColor = new Color(50, 50, 120);
+        }
+
+        public override void Update(RenderWindow wnd)
+        {
+            if (parent != null)
+            {
+                _shape.Position = parent.position + position;
+            }
+
+            if (Mouse.IsButtonPressed(Mouse.Button.Left))
+            {
+                Vector2i mousePos = Mouse.GetPosition(wnd);
+                Console.WriteLine(mousePos.X + " " + mousePos.Y);
+                IntRect rect = new IntRect((Vector2i)position, (Vector2i)size);
+
+                if (rect.Contains(mousePos.X, mousePos.Y))
+                {
+                    onClick(this, new EventArgs());
+                }
+            }
+        }
+
+        public override void Draw(RenderTarget target)
+        {
+            target.Draw(_shape);
+        }
+    }
 }

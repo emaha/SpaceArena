@@ -1,12 +1,13 @@
 ﻿using System;
-using SFML.System;
 using SFML.Graphics;
+using SFML.System;
+using SpaceOnLine;
 
-namespace SpaceOnLine
+namespace SpaceArena.GameObjects
 {
-	public class Ship : SpaceObject
-	{
-        int ID { get; set; }
+    public class Ship : SpaceObject
+    {
+        private int ID { get; set; }
         public float Thrust { get; set; } //тяга
         public float Weight { get; set; } = 2.0f; //вес
         public EventHandler damegeTakenEvent;
@@ -14,24 +15,24 @@ namespace SpaceOnLine
         private float fireCDremaining = 0.0f;
 
         public Ship()
-		{
+        {
             sprite = new Sprite(AssetManager.GetTexture("ship"));
-            sprite.TextureRect = new IntRect(50,0,70,105);
+            sprite.TextureRect = new IntRect(50, 0, 70, 105);
             sprite.Origin = new Vector2f(35, 52);
         }
-		
-		public override void Update()
-		{
-            Velocity += new Vector2f((float)Math.Cos(Rotation) * Thrust/100/Weight,
-                    (float)Math.Sin(Rotation) * Thrust/100 /Weight);
-            
+
+        public override void Update()
+        {
+            Velocity += new Vector2f((float)Math.Cos(Rotation) * Thrust / 100 / Weight,
+                    (float)Math.Sin(Rotation) * Thrust / 100 / Weight);
+
             fireCDremaining -= 0.016f;
 
             base.Update();
         }
-		
-		public override void Draw(RenderTarget target)
-		{
+
+        public override void Draw(RenderTarget target)
+        {
             target.Draw(sprite);
         }
 
@@ -43,12 +44,10 @@ namespace SpaceOnLine
                 fireCDremaining = fireCD;
             }
         }
-		
-		public void TakeDamage(int amount)
-		{
-			damegeTakenEvent(this , new EventArgs());
-		}
-		
-		
-	}
+
+        public void TakeDamage(int amount)
+        {
+            damegeTakenEvent(this, new EventArgs());
+        }
+    }
 }
