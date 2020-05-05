@@ -1,7 +1,6 @@
 ﻿using SFML.Graphics;
 using SpaceArena.UI;
 using System.Collections.Generic;
-using SFML.System;
 
 namespace SpaceArena.Managers
 {
@@ -19,6 +18,16 @@ namespace SpaceArena.Managers
             foreach (var control in controls)
             {
                 control.Update(wnd);
+            }
+
+            for (int i = 0; i < controls.Count; i++)
+            {
+                var w = controls[i] as GmWindow;
+
+                if (w != null && w.Closed)
+                {
+                    controls.Remove(controls[i]);
+                }
             }
         }
 

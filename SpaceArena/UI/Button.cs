@@ -15,7 +15,7 @@ namespace SpaceArena.UI
         }
     }
 
-    public class Button : UIControl
+    public class Button : UIControl, Drawable
     {
         public string text;
 
@@ -30,6 +30,11 @@ namespace SpaceArena.UI
             _shape.FillColor = new Color(50, 50, 120);
         }
 
+        public void SetColor(Color color)
+        {
+            _shape.FillColor = color;
+        }
+
         public override void Update(RenderWindow wnd)
         {
             if (parent != null)
@@ -40,8 +45,7 @@ namespace SpaceArena.UI
             if (Mouse.IsButtonPressed(Mouse.Button.Left))
             {
                 Vector2i mousePos = Mouse.GetPosition(wnd);
-                Console.WriteLine(mousePos.X + " " + mousePos.Y);
-                IntRect rect = new IntRect((Vector2i)position, (Vector2i)size);
+                IntRect rect = new IntRect((Vector2i)_shape.Position, (Vector2i)_shape.Size);
 
                 if (rect.Contains(mousePos.X, mousePos.Y))
                 {
@@ -53,6 +57,11 @@ namespace SpaceArena.UI
         public override void Draw(RenderTarget target)
         {
             target.Draw(_shape);
+        }
+
+        public void Draw(RenderTarget target, RenderStates states)
+        {
+            target.Draw(_shape,states);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace SpaceArena.GameObjects
         public Asteroid()
         {
             sprite = new Sprite(AssetManager.GetTexture("asteroid"));
+            sprite.Scale = new SFML.System.Vector2f(0.25f, 0.25f);
         }
 
         public override void Update()

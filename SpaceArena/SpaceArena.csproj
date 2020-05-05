@@ -78,6 +78,7 @@
     <Compile Include="GameObjects\Ship.cs" />
     <Compile Include="GameObjects\SpaceObject.cs" />
     <Compile Include="GameObjects\Station.cs" />
+    <Compile Include="UI\IWindow.cs" />
     <Compile Include="UI\UIControl.cs" />
     <Compile Include="UI\GmWindow.cs" />
     <Compile Include="WindowMain.cs" />

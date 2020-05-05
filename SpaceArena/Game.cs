@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using SpaceArena.GameObjects;
 using SpaceArena.Managers;
 using SpaceArena.UI;
 
@@ -9,6 +11,8 @@ namespace SpaceOnLine
 {
     public class Game
     {
+        private readonly Dictionary<Keyboard.Key, bool> _pressedButtons = new Dictionary<Keyboard.Key, bool>();
+
         private const int AppWidth = 1600;
         private const int AppHeight = 900;
 
@@ -127,12 +131,12 @@ namespace SpaceOnLine
             _fpsText.DisplayedString = "FPS: " + (int)_fps;
 
             LevelManager.Draw(_wnd);
+            Player.Draw(_wnd);
+            UiManager.Draw(_wnd);
+
             _wnd.Draw(_fpsText);
             _wnd.Draw(_thrustText);
             _wnd.Draw(_posText);
-            //Player.Draw(wnd);
-
-            UiManager.Draw(_wnd);
 
             _wnd.Display();
         }
@@ -176,6 +180,11 @@ namespace SpaceOnLine
             {
                 Player.ship.Fire();
             }
+            if (Keyboard.IsKeyPressed(Keyboard.Key.B))
+            {
+                OpenWindow();
+            }
+
         }
 
         private Vector2f Lerp(Vector2f v0, Vector2f v1, float t)
@@ -183,43 +192,56 @@ namespace SpaceOnLine
             return (1 - t) * v0 + t * v1;
         }
 
-        private void InitLevel()
+        private void OpenWindow()
         {
-            var window = new GmWindow(new Vector2f(100, 100), new Vector2f(300, 200));
-            var button1 = new Button(new Vector2f(50, 50), new Vector2f(60, 40));
-            window.Add(button1);
+            var window = new GmWindow(new Vector2f(_random.Next(500), _random.Next(500)), new Vector2f(500, 400));
             UiManager.Add(window);
 
-            ////Ships
-            //for (int i = 0; i < 500; i++)
-            //{
-            //    Ship s = new Ship {
-            //        Position = new Vector2f(random.Next(10000) - 5000, random.Next(10000) - 5000),
-            //        Velocity = new Vector2f((float) random.NextDouble() - 0.5f, (float) random.NextDouble() - 0.5f),
-            //        Size = new Vector2f(20, 20)
-            //    };
+            var button1 = new Button(new Vector2f(50, 50), new Vector2f(60, 40));
+            window.Add(button1);
+            button1.onClick += new EventHandler((s, e) =>
+            {
+                Console.WriteLine("Btn prssd");
+                window.Close();
+            });
+        }
 
-            //    LevelManager.AddObject(s);
-            //}
+        private void InitLevel()
+        {
+            OpenWindow();
 
-            ////Stations
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    SpaceObject station = new Station();
-            //    station.Position = new Vector2f(random.Next(10000)-5000, random.Next(10000) - 5000);
-            //    station.Size = new Vector2f(random.Next(200) + 10, random.Next(200) + 10);
+            //Ships
+            for (int i = 0; i < 500; i++)
+            {
+                Ship s = new Ship
+                {
+                    Position = new Vector2f(_random.Next(10000) - 5000, _random.Next(10000) - 5000),
+                    Velocity = new Vector2f((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f),
+                    Size = new Vector2f(20, 20)
+                };
 
-            //    LevelManager.AddObject(station);
-            //}
+                LevelManager.AddObject(s);
+            }
 
-            ////Asteroids
-            //for (int i = 0; i < 1000; i++) {
-            //    SpaceObject asteroid = new Asteroid();
-            //    asteroid.Position = new Vector2f(random.Next(10000) - 5000, random.Next(10000) - 5000);
-            //    asteroid.Size = new Vector2f(random.Next(200) + 10, random.Next(200) + 10);
-            //    asteroid.Rotation = (float)random.NextDouble()*360f;
-            //    LevelManager.AddObject(asteroid);
-            //}
+            //Stations
+            for (int i = 0; i < 10; i++)
+            {
+                SpaceObject station = new Station();
+                station.Position = new Vector2f(_random.Next(10000) - 5000, _random.Next(10000) - 5000);
+                station.Size = new Vector2f(_random.Next(200) + 10, _random.Next(200) + 10);
+
+                LevelManager.AddObject(station);
+            }
+
+            //Asteroids
+            for (int i = 0; i < 1000; i++)
+            {
+                SpaceObject asteroid = new Asteroid();
+                asteroid.Position = new Vector2f(_random.Next(10000) - 5000, _random.Next(10000) - 5000);
+                asteroid.Size = new Vector2f(_random.Next(100) + 10, _random.Next(100) + 10);
+                asteroid.Rotation = (float)_random.NextDouble() * 360f;
+                LevelManager.AddObject(asteroid);
+            }
         }
 
         private void DrawLine(RenderTarget target)
